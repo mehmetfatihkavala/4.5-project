@@ -5,13 +5,13 @@ spring:
     config:
       server:
         git:
-          uri:
-          default-label: master
+          uri: https://github.com/mehmetfatihkavala/4.5-project.git
+          default-label: main
           search-paths:
             - configurations/
             - configurations/{application}
 
 server:
   port: 8787
-  
+
 
