@@ -14,7 +14,8 @@ public class GatewayConfig {
                 .routes()
                 .route("product-service", r -> r
                         .path("/api/v1/products/**")
-                        .filters(f -> f.retry(config -> config.setRetries(3)))
+                        .filters(f -> f
+                                .retry(config -> config.setRetries(3)))
                         .uri("lb://product-service"))
 
                 .route("fallback", r -> r
