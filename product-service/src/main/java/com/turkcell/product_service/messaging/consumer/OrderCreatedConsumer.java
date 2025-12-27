@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OrderCreatedConsumer {
 
     @Bean
-    public Consumer<OrderCreatedEvent> orderCreater() {
+    public Consumer<OrderCreatedEvent> orderCreated() {
         return event -> {
             System.out.println("Order created: " + event.productId());
         };
