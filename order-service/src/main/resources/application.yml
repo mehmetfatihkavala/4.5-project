@@ -1,12 +1,12 @@
 spring:
   kafka:
-    bootstrap-servers: localhost:9192
+    bootstrap-servers: localhost:9194
   cloud:
     stream:
       kafka:
         binder:
           brokers:
-          - localhost:9192
+          - localhost:9194
       bindings:
         orderCreated-out-0:
           destination: order-topic
