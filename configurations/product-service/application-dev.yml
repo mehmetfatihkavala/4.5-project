@@ -9,6 +9,20 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+
+  kafka:
+    bootstrap-servers: localhost:9194
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers:
+          - localhost:9194
+      bindings:
+        orderCreated-in-0:
+          destination: order-topic
+          group: product-service
+
   jpa:
     hibernate:
       ddl-auto: update
