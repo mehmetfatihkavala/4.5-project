@@ -8,56 +8,55 @@ import com.turkcell.product_service.infrastructure.mappers.ProductMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * In-memory implementation of ProductRepository.
- * Uses a ConcurrentHashMap for thread-safe storage.
+ * JPA implementation of ProductRepository.
+ * Uses Spring Data JPA for database persistence.
  */
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
 
-    private final Map<UUID, ProductEntity> storage = new ConcurrentHashMap<>();
+    private final JpaProductRepository jpaRepository;
+
+    public ProductRepositoryImpl(JpaProductRepository jpaRepository) {
+        this.jpaRepository = jpaRepository;
+    }
 
     @Override
     public Product save(Product product) {
         ProductEntity entity = ProductMapper.toEntity(product);
-        storage.put(entity.getId(), entity);
-        return ProductMapper.toDomain(entity);
+        ProductEntity savedEntity = jpaRepository.save(entity);
+        return ProductMapper.toDomain(savedEntity);
     }
 
     @Override
     public Optional<Product> findById(ProductId id) {
-        ProductEntity entity = storage.get(id.getValue());
-        return Optional.ofNullable(ProductMapper.toDomain(entity));
+        return jpaRepository.findById(id.getValue())
+                .map(ProductMapper::toDomain);
     }
 
     @Override
     public List<Product> findAll() {
-        return storage.values().stream()
+        return jpaRepository.findAll().stream()
                 .map(ProductMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void deleteById(ProductId id) {
-        storage.remove(id.getValue());
+        jpaRepository.deleteById(id.getValue());
     }
 
     @Override
     public boolean existsById(ProductId id) {
-        return storage.containsKey(id.getValue());
+        return jpaRepository.existsById(id.getValue());
     }
 
     @Override
     public List<Product> findByNameContaining(String name) {
-        String lowerCaseName = name.toLowerCase();
-        return storage.values().stream()
-                .filter(entity -> entity.getName().toLowerCase().contains(lowerCaseName))
+        return jpaRepository.findByNameContainingIgnoreCase(name).stream()
                 .map(ProductMapper::toDomain)
                 .collect(Collectors.toList());
     }
