@@ -24,7 +24,15 @@ public class OrdersController {
 
         Message<OrderCreatedEvent> message = MessageBuilder.withPayload(event).build();
 
-        streamBridge.send("orderCreated-out-0", message);
+        try {
+            boolean isSent = streamBridge.send("orderCreated-out-0", message);
+            if (!isSent) {
+                System.out.println("Mesaj Gönderilemedi...");
+            }
+        } catch (Exception e) {
+            System.out.println("Mesaj Gönderilemedi...");
+        }
+
         return createOrderDto.productId();
     }
 
